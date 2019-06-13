@@ -297,8 +297,9 @@ class S3Client(FileSystem):
 
         (bucket, key) = self._path_to_bucket_and_key(destination_s3_path)
 
-        self.s3.meta.client.upload_fileobj(
-            Fileobj=open(local_path, 'rb'), Bucket=bucket, Key=key, Config=transfer_config, ExtraArgs=kwargs)
+        with open(local_path, 'rb') as fileobj:
+            self.s3.meta.client.upload_fileobj(
+                Fileobj=fileobj, Bucket=bucket, Key=key, Config=transfer_config, ExtraArgs=kwargs)
 
     def copy(self, source_path, destination_path, threads=DEFAULT_THREADS, start_time=None, end_time=None,
              part_size=DEFAULT_PART_SIZE, **kwargs):
